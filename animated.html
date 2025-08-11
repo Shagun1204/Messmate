@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MessMates – Rate & Chat</title>
+
+  <!-- Anime.js & GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #e6f0ff, #f5faff);
+      color: #222;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: linear-gradient(90deg, #007BFF, #0056b3);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    nav a {
+      color: white;
+      margin-left: 1rem;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .left, .right {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      opacity: 0;
+    }
+
+    .features-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .features-list li {
+      background: #f0f8ff;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.6rem;
+      opacity: 0;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      margin-right: 0.5rem;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+    }
+
+    .rating-item {
+      background: #f9f9f9;
+      padding: 0.6rem 0.8rem;
+      border-radius: 6px;
+      margin-bottom: 0.4rem;
+      opacity: 0;
+    }
+    .chat-sample {
+      margin-top: 0.8rem;
+      font-style: italic;
+      color: #555;
+      opacity: 0;
+    }
+
+    .chat-input {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #007BFF;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.5s ease;
+      z-index: 999;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 500px;
+      width: 90%;
+    }
+
+    @media(max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+      nav {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      nav a {
+        margin-left: 0;
+      }
+      .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header id="mainHeader">
+  <div class="logo">🍽 MessMates</div>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Menu</a>
+    <a href="#">Live Chat</a>
+    <a href="#">Ratings</a>
+    <a href="#">Profile</a>
+  </nav>
+</header>
+
+<!-- Main -->
+<div class="container">
+  <div class="left section" id="section1">
+    <h2 id="headline">Eat Together. Rate Together. Thrive Together.</h2>
+    <p><strong>Current Students in Mess:</strong> <span id="studentCount">0</span></p>
+    <p><strong>Today's Meal:</strong> Paneer Masala • Dal • Rice • Salad • Gulab Jamun</p>
+
+    <ul class="features-list">
+      <li>⭐ Rate today’s food instantly</li>
+      <li>💬 Chat in real-time with everyone</li>
+      <li>📅 View full menu for the week</li>
+      <li>📊 Track food quality trends</li>
+    </ul>
+
+    <button class="btn" onclick="showToast('Meal logged!')">Log Today’s Meal</button>
+    <button class="btn" onclick="document.getElementById('menuModal').style.display='flex'">View Weekly Menu</button>
+  </div>
+
+  <div class="right section" id="section2">
+    <h3>Live Ratings Feed</h3>
+    <div class="rating-item" id="paneerRating">Paneer Masala: 4.5 ⭐ (65 students)</div>
+    <div class="rating-item" id="dalRating">Dal Tadka: 4.0 ⭐ (53 students)</div>
+    <div class="rating-item" id="dessertRating">Gulab Jamun: 4.8 ⭐ (70 students)</div>
+
+    <p class="chat-sample" id="lastChat">💬 Rohan: "Try the gulab jamun — it’s amazing today! 😋"</p>
+
+    <div class="chat-input">
+      <input type="text" placeholder="Send a message..." id="chatInput" />
+      <button class="btn" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- Third Scroll Section -->
+<div class="container section" id="section3">
+  <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); opacity: 0;">
+    <h3>Why MessMates?</h3>
+    <p>We bring students together through food. Enjoy meals, rate them, and connect with others over shared experiences. Your feedback improves quality daily!</p>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<!-- Modal -->
+<div id="menuModal" class="modal" onclick="this.style.display='none'">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <h4>Weekly Menu</h4>
+    <ul>
+      <li><strong>Mon:</strong> Rajma + Rice + Kheer</li>
+      <li><strong>Tue:</strong> Aloo Gobi + Chapati + Halwa</li>
+      <li><strong>Wed:</strong> Chole + Bhature + Jalebi</li>
+      <li><strong>Thu:</strong> Paneer Butter + Rice + Ice Cream</li>
+      <li><strong>Fri:</strong> Mixed Veg + Roti + Gulab Jamun</li>
+      <li><strong>Sat:</strong> Dal Fry + Jeera Rice + Fruit Custard</li>
+      <li><strong>Sun:</strong> Biryani + Raita + Rasgulla</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // Navbar Slide In
+  gsap.to("header", { y: 0, opacity: 1, duration: 1.2, ease: "power3.out" });
+
+  // Typewriter
+  const headlineText = "Eat Together. Rate Together. Thrive Together.";
+  let i = 0;
+  const headlineEl = document.getElementById("headline");
+  headlineEl.textContent = "";
+  function typeWriter() {
+    if (i < headlineText.length) {
+      headlineEl.textContent += headlineText.charAt(i);
+      i++;
+      setTimeout(typeWriter, 40);
+    }
+  }
+  setTimeout(typeWriter, 400);
+
+  // Live Data
+  setInterval(() => {
+    document.getElementById("studentCount").textContent = Math.floor(Math.random() * 50) + 50;
+    document.getElementById("paneerRating").textContent = `Paneer Masala: ${(4 + Math.random()).toFixed(1)} ⭐ (${60 + Math.floor(Math.random() * 10)} students)`;
+    document.getElementById("dalRating").textContent = `Dal Tadka: ${(3.5 + Math.random()).toFixed(1)} ⭐ (${50 + Math.floor(Math.random() * 8)} students)`;
+    document.getElementById("dessertRating").textContent = `Gulab Jamun: ${(4.5 + Math.random() * 0.4).toFixed(1)} ⭐ (${65 + Math.floor(Math.random() * 10)} students)`;
+  }, 5000);
+
+  // Chat Message
+  function sendMessage() {
+    const input = document.getElementById("chatInput");
+    const message = input.value.trim();
+    if (message) {
+      document.getElementById("lastChat").textContent = `💬 You: "${message}"`;
+      input.value = '';
+      showToast("Message sent");
+    }
+  }
+
+  // Toast
+  function showToast(msg) {
+    const toast = document.getElementById("toast");
+    toast.textContent = msg;
+    toast.style.opacity = 1;
+    toast.style.transform = "translateY(0)";
+    setTimeout(() => {
+      toast.style.opacity = 0;
+      toast.style.transform = "translateY(30px)";
+    }, 3000);
+  }
+
+  // Scroll-triggered sections
+  gsap.utils.toArray('.section').forEach((section, index) => {
+    gsap.fromTo(section, 
+      { opacity: 0, y: 50 }, 
+      { 
+        opacity: 1, y: 0, duration: 1, 
+        scrollTrigger: {
+          trigger: section,
+          start: "top 80%",
+          toggleActions: "play none none reverse"
+        } 
+      }
+    );
+  });
+
+  // Rating items animation
+  gsap.from(".rating-item", {
+    opacity: 0,
+    y: 20,
+    duration: 1,
+    stagger: 0.2,
+    delay: 1
+  });
+
+  // Features list animation
+  anime({
+    targets: '.features-list li',
+    translateX: [-50, 0],
+    opacity: [0, 1],
+    delay: anime.stagger(150, { start: 600 }),
+    easing: 'easeOutQuad'
+  });
+
+  // Chat message
+  gsap.to(".chat-sample", { opacity: 1, delay: 2.2, duration: 1 });
+
+  // Button hover animation via JS (scale pulse)
+  document.querySelectorAll(".btn").forEach(btn => {
+    btn.addEventListener("mouseenter", () => {
+      gsap.to(btn, { scale: 1.05, duration: 0.2, ease: "power1.out" });
+    });
+    btn.addEventListener("mouseleave", () => {
+      gsap.to(btn, { scale: 1, duration: 0.2, ease: "power1.out" });
+    });
+  });
+</script>
+
+</body>
+</html>
