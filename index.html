@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MessMates – Rate & Chat Your Hostel Mess</title>
+  <link rel="stylesheet" href="style.css" />
+  
+
+  <!-- Anime.js & GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+  <script src="animation.js" defer></script>
+   
+
+</head>
+<body>
+  <header id="mainHeader">
+    <div class="logo" aria-label="MessMates Logo">MessMates</div>
+    <nav id="navMenu" aria-label="Primary navigation">
+      <a href="#menu" tabindex="0">Menu</a>
+      <a href="#chat" tabindex="0">Live Chat</a>
+      <a href="#ratings" tabindex="0">Ratings</a>
+      <a href="Help" tabindex="0">Help</a>
+    </nav>
+    <button id="hamburgerBtn" class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navMenu" tabindex="0">
+      <div></div><div></div><div></div>
+    </button>
+  </header>
+
+  <div class="landing-wrapper" role="main">
+    <!-- LEFT SIDE: Illustration + Features -->
+    <section class="illustration-section" aria-labelledby="leftTitle">
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+
+      <!-- Floating food icons (emoji as example, you can replace with SVG if wanted) -->
+      <div class="floating-food pizza" aria-hidden="true" style="font-size: 32px; user-select:none;">🍕</div>
+      <div class="floating-food burger" aria-hidden="true" style="font-size: 36px; user-select:none;">🍔</div>
+      <div class="floating-food drink" aria-hidden="true" style="font-size: 28px; user-select:none;">🥤</div>
+
+      <h2 id="leftTitle" class="top-dish-tag">Today's Top Dish: Paneer Masala</h2>
+
+      <div class="menu-info">
+        <strong>Mess Name:</strong> <span id="displayMessName">Hostel A Mess</span>
+      </div>
+
+      <div class="daily-tip" aria-live="polite">
+        💡 <em>Tip:</em> Always try to give honest feedback to help improve your mess!
+      </div>
+
+      <!-- Food Plate SVG -->
+      <svg class="food-illustration" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250" aria-hidden="true" focusable="false">
+        <!-- Plate circle -->
+        <circle cx="125" cy="125" r="115" fill="#f0f4ff" stroke="#007BFF" stroke-width="10"/>
+        <!-- Rice -->
+        <ellipse cx="125" cy="140" rx="70" ry="30" fill="#fff7d6" />
+        <!-- Curry -->
+        <path fill="#ff7a45" d="M75 130 q50 40 100 0 q-25 40 -100 0z" />
+        <!-- Paneer blocks -->
+        <rect x="90" y="120" width="20" height="20" fill="#ffdeb4" stroke="#d47c40" stroke-width="1.5" rx="4" ry="4"/>
+        <rect x="120" y="110" width="20" height="20" fill="#ffdeb4" stroke="#d47c40" stroke-width="1.5" rx="4" ry="4"/>
+        <rect x="150" y="130" width="20" height="20" fill="#ffdeb4" stroke="#d47c40" stroke-width="1.5" rx="4" ry="4"/>
+        <!-- Steam -->
+        <path stroke="#b7b7b7" stroke-width="2" fill="none" d="M110 90 q10 -25 15 0" />
+        <path stroke="#b7b7b7" stroke-width="2" fill="none" d="M130 85 q10 -25 15 0" />
+        <!-- Plate shadow -->
+        <ellipse cx="125" cy="240" rx="90" ry="15" fill="#d3e1ff" opacity="0.3"/>
+      </svg>
+    </section>
+
+    <!-- RIGHT SIDE: Content -->
+    <section class="content-section" aria-labelledby="mainHeading">
+      <div class="app-logo">MessMates</div>
+      <label for="messName" class="mess-name-label">Enter Your Mess Name:</label>
+      <input type="text" id="messName" class="mess-name-input" placeholder="Eg. Hostel A Mess" aria-describedby="messNameHelp" aria-label="Mess Name" />
+
+      <div id="messNameHelp" class="app-tagline">Rate your hostel mess food & chat with fellow students</div>
+
+      <h1 id="mainHeading" class="headline">Welcome to MessMates</h1>
+
+      <ul class="features-list" aria-live="polite">
+        <li>Rate daily menus and share honest reviews.</li>
+        <li>Real-time chat with your mess mates.</li>
+        <li>Discover top-rated dishes and trending reviews.</li>
+        <li>Track stats and improve your mess experience.</li>
+      </ul>
+
+      <!-- Upload Food Picture -->
+      <div class="upload-container">
+        <label for="uploadInput" class="upload-label" tabindex="0" aria-label="Upload a picture of your food">
+          📸 Upload a picture of your food
+        </label>
+        <input type="file" id="uploadInput" accept="image/*" aria-label="Upload food picture" />
+        <img id="previewImage" alt="Preview of uploaded food" class="preview-img" style="display:none;" />
+      </div>
+
+      <div class="quote" aria-live="polite">"Changing the mess experience one rating at a time!"</div>
+
+      <div class="cta-group">
+        <button class="btn-primary" aria-label="Go to Menu">Go to Menu</button>
+        <button class="btn-secondary" aria-label="Join Live Chat">Join Live Chat</button>
+      </div>
+
+      <div class="live-feed" aria-live="polite" id="liveFeed">
+        <h3>Live Feed</h3>
+        <div class="rating-item">User123 rated Paneer Masala 4/5</div>
+        <div class="rating-item">Foodie789 said: "Delicious & fresh!"</div>
+        <div class="chat-sample">Chat snippet: "Anyone tried today's dal?"</div>
+        <div class="stats">150 ratings today, 75 active users</div>
+      </div>
+
+      <div class="badge-techfest" aria-label="Special badge">🏆 TechFest 2025 Winner</div>
+    </section>
+  </div> 
+  <style> 
+
+  </style>
+
+  
+</body>
+</html>
